@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Learning Survey</title>
+  <style>
+    :root {
+      --primary: #687270;
+      --primary-dark: #4f5957;
+      --accent: #9ea9b9;
+      --background: #f4f6f7;
+      --card: #ffffff;
+      --text: #323232;
+      --muted: #6c757d;
+      --border: #d9dee3;
+      --success: #2f7d4a;
+      --danger: #b33a3a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      color: var(--text);
+      background: var(--background);
+      line-height: 1.5;
+    }
+
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+
+    header h1 { margin: 0 0 0.35rem; }
+    header p { margin: 0; opacity: 0.9; }
+
+    main {
+      width: min(850px, calc(100% - 2rem));
+      margin: 2rem auto;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.4rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .question-number {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    h2 {
+      margin: 0.25rem 0 1rem;
+      font-size: 1.1rem;
+    }
+
+    label { display: block; margin: 0.45rem 0; }
+
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font: inherit;
+    }
+
+    textarea { min-height: 100px; resize: vertical; }
+
+    .scale {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+    }
+
+    .scale label {
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0.65rem 0.25rem;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .scale label:hover { background: #eef1f3; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    button {
+      border: 0;
+      border-radius: 7px;
+      padding: 0.8rem 1.1rem;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .primary { background: var(--primary); color: white; }
+    .primary:hover { background: var(--primary-dark); }
+    .secondary { background: var(--accent); color: #20252a; }
+    .danger { background: #f0d7d7; color: var(--danger); }
+
+    #message {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.9rem;
+      border-radius: 7px;
+      font-weight: 600;
+    }
+
+    #message.success {
+      display: block;
+      background: #dcefe2;
+      color: var(--success);
+    }
+
+    #message.error {
+      display: block;
+      background: #f5dddd;
+      color: var(--danger);
+    }
+
+    .status {
+      color: var(--muted);
+      margin: 0.5rem 0 0;
+    }
+
+    .note {
+      background: #edf1f5;
+      border-left: 4px solid var(--accent);
+      padding: 0.8rem 1rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .scale { grid-template-columns: 1fr; }
+      .scale label { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Student Learning Survey</h1>
+    <p>A 10-question survey connected to Google Sheets</p>
+  </header>
+
+  <main>
+    <div class="note">
+      Responses are sent over the internet to a Google Sheet through a Google Apps Script web app.
+      No local CSV selection or file permission is required.
+    </div>
+
+    <form id="surveyForm">
+      <section class="card">
+        <div class="question-number">Question 1</div>
+        <h2>What name or participant ID would you like to use?</h2>
+        <input type="text" id="participant_id" name="participant_id" required>
+      </section>
+
+      <section class="card">
+        <div class="question-number">Question 2</div>
+        <h2>Which course format are you using?</h2>
+        <select id="course_format" name="course_format" required>
+          <option value="">Choose one</option>
+          <option>In person</option>
+          <option>Online</option>
+          <option>Hybrid</option>
+        </select>
+      </section>
+
+      <section class="card">
+        <div class="question-number">Question 3</div>
+        <h2>The course expectations are clear.</h2>
+        <div class="scale">
+          <label><input type="radio" name="expectations_clear" value="1" required> 1<br>Strongly disagree</label>
+          <label><input type="radio" name="expectations_clear" value="2"> 2<br>Disagree</label>
+          <label><input type="radio" name="expectations_clear" value="3"> 3<br>Neutral</label>
+          <label><input type="radio" name="expectations_clear" value="4"> 4<br>Agree</label>
+          <label><input type="radio" name="expectations_clear" value="5"> 5<br>Strongly agree</label>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="question-number">Question 4</div>
+        <h2>The learning activities support the course objectives.</h2>
+        <div class="scale">
+          <label><input type="radio" name="activities_support" value="1" required> 1<br>Strongly disagree</label>
+          <label><input type="radio" name="activities_support" value="2"> 2<br>Disagree</label>
+          <label><input type="radio" name="activities_support" value="3"> 3<br>Neutral</label>
+          <label><input type="radio" name="activities_support" value="4"> 4<br>Agree</label>
+          <label><input type="radio" name="activities_support" value="5"> 5<br>Strongly agree</label>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="question-number">Question 5</div>
+        <h2>The course materials are easy to navigate.</h2>
+        <div class="scale">
+          <label><input type="radio" name="materials_navigate" value="1" required> 1<br>Strongly disagree</label>
+          <label><input type="radio" name="materials_navigate" value="2"> 2<br>Disagree</label>
+          <label><input type="radio" name="materials_navigate" value="3"> 3<br>Neutral</label>
+          <label><input type="radio" name="materials_navigate" value="4"> 4<br>Agree</label>
+          <label><input type="radio" name="materials_navigate" value="5"> 5<br>Strongly agree</label>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="question-number">Question 6</div>
+        <h2>I feel comfortable asking for help.</h2>
+        <div class="scale">
+          <label><input type="radio" name="comfortable_help" value="1" required> 1<br>Strongly disagree</label>
+          <label><input type="radio" name="comfortable_help" value="2"> 2<br>Disagree</label>
+          <label><input type="radio" name="comfortable_help" value="3"> 3<br>Neutral</label>
+          <label><input type="radio" name="comfortable_help" value="4"> 4<br>Agree</label>
+          <label><input type="radio" name="comfortable_help" value="5"> 5<br>Strongly agree</label>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="question-number">Question 7</div>
+        <h2>How manageable is the current workload?</h2>
+        <select id="workload" name="workload" required>
+          <option value="">Choose one</option>
+          <option>Much too light</option>
+          <option>A little too light</option>
+          <option>About right</option>
+          <option>A little too heavy</option>
+          <option>Much too heavy</option>
+        </select>
+      </section>
+
+      <section class="card">
+        <div class="question-number">Question 8</div>
+        <h2>How confident are you using the technology required for this course?</h2>
+        <select id="technology_confidence" name="technology_confidence" required>
+          <option value="">Choose one</option>
+          <option>Not at all confident</option>
+          <option>Slightly confident</option>
+          <option>Moderately confident</option>
+          <option>Very confident</option>
+          <option>Extremely confident</option>
+        </select>
+      </section>
+
+      <section class="card">
+        <div class="question-number">Question 9</div>
+        <h2>Which course resource has been most helpful?</h2>
+        <select id="helpful_resource" name="helpful_resource" required>
+          <option value="">Choose one</option>
+          <option>Readings</option>
+          <option>Videos</option>
+          <option>Class discussion</option>
+          <option>Examples and demonstrations</option>
+          <option>Assignments</option>
+          <option>Instructor feedback</option>
+          <option>Other</option>
+        </select>
+      </section>
+
+      <section class="card">
+        <div class="question-number">Question 10</div>
+        <h2>What is one change that would improve your learning experience?</h2>
+        <textarea id="improvement" name="improvement" required></textarea>
+      </section>
+
+      <!-- SUBMISSION CONTROLS -->
+      <section class="card">
+        <div class="actions">
+          <button class="primary" type="submit" id="submitButton">Submit Response</button>
+        </div>
+        <p class="status" id="responseCount">0 responses submitted during this session.</p>
+        <div id="message" role="status" aria-live="polite"></div>
+      </section>
+    </form>
+  </main>
+
+  <script>
+    /* ==================================================================
+       PART 3: JAVASCRIPT BEHAVIOR
+       1. Collect the survey fields.
+       2. Add an ID and timestamp.
+       3. Send JSON to Google Apps Script.
+       4. Reset the form after the browser sends the request.
+       ================================================================== */
+
+    // A. CONNECT JAVASCRIPT TO THE HTML
+    const form = document.getElementById("surveyForm");
+    const message = document.getElementById("message");
+    const responseCount = document.getElementById("responseCount");
+    const submitButton = document.getElementById("submitButton");
+
+    // Replace this placeholder with the deployed Google Apps Script /exec URL.
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp-1m_D34chzbhF8wdja07EGR3R2KQPfPU3phX9xmjaknNt8SorcuYWNklMO0Xv3RECQ/exec";
+    let sessionResponseCount = 0;
+
+    // B. DISPLAY HELPERS
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = type;
+    }
+
+    function updateSessionCount() {
+      responseCount.textContent = `${sessionResponseCount} response${sessionResponseCount === 1 ? "" : "s"} submitted during this session.`;
+    }
+
+    // C. BUILD ONE RESPONSE OBJECT
+    function buildResponseRecord() {
+      const data = new FormData(form);
+      const record = {
+        response_id: crypto.randomUUID ? crypto.randomUUID() : `response-${Date.now()}`,
+        submitted_at: new Date().toISOString()
+      };
+      for (const [key, value] of data.entries()) record[key] = value;
+      return record;
+    }
+
+    // D. SEND THE RESPONSE
+    async function sendResponse(record) {
+      if (GOOGLE_SCRIPT_URL.includes("PASTE_YOUR")) {
+        throw new Error("Add your Google Apps Script /exec URL to GOOGLE_SCRIPT_URL first.");
+      }
+
+      // no-cors avoids a preflight request. Because the reply is opaque,
+      // verify the first test submission directly in the Google Sheet.
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(record)
+      });
+    }
+
+    // E. HANDLE FORM SUBMISSION
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Submitting...";
+
+      try {
+        await sendResponse(buildResponseRecord());
+        sessionResponseCount += 1;
+        updateSessionCount();
+        form.reset();
+        showMessage("Response sent. Verify the first test row in the Google Sheet.", "success");
+        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      } catch (error) {
+        console.error(error);
+        showMessage(`The response was not sent: ${error.message}`, "error");
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = "Submit Response";
+      }
+    });
+
+    // F. STARTUP
+    updateSessionCount();
+  </script>
+</body>
+</html>
